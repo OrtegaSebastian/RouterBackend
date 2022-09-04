@@ -8,13 +8,20 @@ const Products = [];
 router.get('/', (req, res) => {
     res.send({Products})
   })
-router.post('/',(res,send)=>{
-    const {title, price, tumbnail} = req.body;
-    Products.push({title, price, tumbnail})
-    res.send({added:{title, price, tumbnail} })
+
+router.put('/:id', (req, res) => {
+  res.send({Products})
+  id= req.params.id
+})
+  
+router.post('/products',(res,send)=>{
+    const {title, price, tumnail} = req.body;
+    Products.push({title, price, tumnail})
+    res.send({added:{title, price, tumnail} })
 })
 
-exports.module = router;
+module.exports = router;
+
 
 // Consigna: Realizar un proyecto de servidor basado en node.js y express que ofrezca una API RESTful de productos. En detalle, que incorpore las siguientes rutas:
 // GET '/api/productos' -> devuelve todos los productos.
