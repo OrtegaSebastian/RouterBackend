@@ -3,19 +3,22 @@ const {Router} = express;
 
 const router = Router();
 
+
+// para pruebas => "title":"prod1", "price": 50, "tumnail":"blablabla.com",
+
 const Products = [];
 //  devuelve todos los productos.
 router.get('/products', (req, res) => {
     res.send({Products})
   })
 //  -> devuelve un producto según su id. VER
-router.get('/productos/:id',(req, res) => {
+router.get('/products/:id',(req, res) => {
   const {id} = req.body;
-  const productSearch = Products.find((productSearch) => productSearch.id == id);
+  const productSearch = Products.find((productSearch) => productSearch.id = id);
   if (productSearch) {
     return productSearch;
   } else {
-    return "Cannot find the product";
+    return console.error("Cannot find the product");
   }
 })
   
@@ -26,6 +29,7 @@ router.post('/products',(req, res)=>{
   const id = Products.length+1
   Products.push({title, price, tumnail, id})
   res.send({added:{title, price, tumnail, id} })
+  return Products;
 })
 
 // !!!PENDIENTE ARREGLAR!!
@@ -36,15 +40,15 @@ router.put('/:id', (req, res) => {
   Products.push({title, price, tumnail, id})
   res.send({Products: "Product has been updated"})
   return Products;
-  
 
 })
 
 
 // DELETE '/api/productos/:id' -> elimina un producto según su id.
 router.delete('/productos/:id', (req,res)=>{
-  const {id} = req.body;
-  Products.splice(Products.find(id))
+  const resultProducts = Products.filter((product) => product.id != id);
+  resultProducts(id);
+
 })
 
 module.exports = router;
