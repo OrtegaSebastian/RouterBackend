@@ -4,8 +4,8 @@ const {Router} = express;
 const router = Router();
 
 const Products = [];
-
-router.get('/', (req, res) => {
+// GET '/api/productos' -> devuelve todos los productos.
+router.get('/products', (req, res) => {
     res.send({Products})
   })
 // PUT '/api/productos/:id' -> recibe y actualiza un producto según su id.
@@ -14,24 +14,23 @@ router.put('/:id', (req, res) => {
 
 })
 
-//agrega productos  
+// !!*agrega productos  cambiar para que el id se incremente solo.!!
 router.post('/products',(req, res)=>{
-    const {title, price, tumnail} = req.body;
-    Products.push({title, price, tumnail})
-    res.send({added:{title, price, tumnail} })
+    const {title, price, tumnail, id} = req.body;
+    Products.push({title, price, tumnail, id})
+    res.send({added:{title, price, tumnail, id} })
 })
 
 module.exports = router;
 
 
 // Consigna: Realizar un proyecto de servidor basado en node.js y express que ofrezca una API RESTful de productos. En detalle, que incorpore las siguientes rutas:
-// GET '/api/productos' -> devuelve todos los productos.
+
 // GET '/api/productos/:id' -> devuelve un producto según su id.
-// POST '/api/productos' -> recibe y agrega un producto, y lo devuelve con su id asignado.
 
 // DELETE '/api/productos/:id' -> elimina un producto según su id.
 // Cada producto estará representado por un objeto con el siguiente formato:
-//title, price thumnail
+
 // Cada ítem almacenado dispondrá de un id numérico proporcionado por el backend, comenzando en 1, y que se irá incrementando a medida de que se incorporen productos. Ese id será utilizado para identificar un producto que va a ser listado en forma individual.
 // Para el caso de que un producto no exista, se devolverá el objeto:
 // { error : 'producto no encontrado' }
