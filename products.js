@@ -11,6 +11,8 @@ const Products = [];
 router.get('/products', (req, res) => {
     res.send({Products})
   })
+
+  // !!!PENDIENTE ARREGLAR!!
 //  -> devuelve un producto según su id. VER
 router.get('/products/:id',(req, res) => {
   const {id} = req.body;
