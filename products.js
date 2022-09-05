@@ -8,13 +8,14 @@ const Products = [];
 router.get('/', (req, res) => {
     res.send({Products})
   })
-
+// PUT '/api/productos/:id' -> recibe y actualiza un producto según su id.
 router.put('/:id', (req, res) => {
-  res.send({Products})
-  id= req.params.id
+  res.send({Products: "actualizar"})
+
 })
-  
-router.post('/products',(res,send)=>{
+
+//agrega productos  
+router.post('/products',(req, res)=>{
     const {title, price, tumnail} = req.body;
     Products.push({title, price, tumnail})
     res.send({added:{title, price, tumnail} })
@@ -27,7 +28,7 @@ module.exports = router;
 // GET '/api/productos' -> devuelve todos los productos.
 // GET '/api/productos/:id' -> devuelve un producto según su id.
 // POST '/api/productos' -> recibe y agrega un producto, y lo devuelve con su id asignado.
-// PUT '/api/productos/:id' -> recibe y actualiza un producto según su id.
+
 // DELETE '/api/productos/:id' -> elimina un producto según su id.
 // Cada producto estará representado por un objeto con el siguiente formato:
 //title, price thumnail
