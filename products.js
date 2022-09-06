@@ -1,29 +1,33 @@
 const express = require('express')
 const {Router} = express;
+const fs = require('fs');
+const Contenedor = require("./container");
+const constructor = new Contenedor("./productos.txt")
+
 
 const router = Router();
 
 
-// para pruebas => "title":"prod1", "price": 50, "tumbnail":"blablabla.com",
-
 const Products = [];
 //  devuelve todos los productos.
 router.get('/products', (req, res) => {
-    res.send({Products})
-  })
+  try {
+    res.send(constructor.getAll());
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
 
   
 //  -> devuelve un producto según su id. 
 router.get('/products/:id',(req, res) => {
-  const { id }  = req.params;
-  const productSearch = Products.find((productSearch) => productSearch.id === id);
-  console.log(productSearch);
-  if (productSearch.length !== 0) {
-    res.send({productSearch}) ;
-  } else {
-    return console.log("Cannot find the product");
+  try {
+    const { id } = req.params;
+    res.send(constructor.getById(parseInt(id)));
+  } catch (err) {
+    res.status(404).send(err);
   }
-})
+});
 
 // agrega productos 
 router.post('/products',(req, res)=>{
@@ -34,37 +38,29 @@ router.post('/products',(req, res)=>{
   return Products;
 })
 
-// !!!PENDIENTE ARREGLAR!!
+
 // PUT '/api/productos/:id' -> recibe y actualiza un producto según su id. 
 router.put('/:id', (req, res) => {
-  const { title, price, tumbnail } = req.body;
-  const { id } = req.params;
-  const productSearch = Products.find((productSearch) => productSearch.id = id);
-  console.log(productSearch);
-  if (productSearch.length === 0) {
-    res.send({Products: "Product not found"}) ;
+  try {
+    const { id } = req.params;
+    const prodNuevo = req.body;
+    const idInt = parseInt(id);
+    res.send(constructor.updateById(idInt, prodNuevo));
+  } catch (err) {
+    res.status(404).send(err.msg);
   }
-  else{
-
-  }
-  // ACA DEBERIA IR ALGO PARA REEMPLAZAR EL ITEM CON LOS NUEVOS.
-  // Products.push({title, price, tumnbail, id})
-  res.send({Products: "Product has been updated"})
-  return Products;
-})
+});
 
 
 // DELETE '/api/productos/:id' -> elimina un producto según su id.
 router.delete('/products/:id', (req,res)=>{
-  const { id } = req.params;
-  const resultProducts = Products.filter((product) => product.id != id);
-  if (resultProducts.length !== 0) {
-    Products = resultProducts;
+  try {
+    const { id } = req.params;
+    res.send(constructor.deleteById(parseInt(id)));
+  } catch (err) {
+    res.status(404).send(err.msg);
   }
-  res.send({message: "Product has been deleted"});
 });
 
 module.exports = router;
 
-
-// Crear un espacio público de servidor que contenga un documento index.html con un formulario de ingreso de productos con los datos apropiados.
