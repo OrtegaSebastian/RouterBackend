@@ -1,82 +1,90 @@
-
+const fs = require('fs');
 // Class container
-    
 class Contenedor {
     
     constructor(path) {
-    
-    this.nameFile = path;
-    
-    this.producto = [];
-    
+        this.file = path;
     }
     
-// Metodo Save(Object)
-    
-    async save(objeto) {
-    
-        const contenido = fs.readFileSync(this.archivo, "utf-8");
-        const productos = JSON.parse(contenido);
-        const id = productos.length + 1;
-        const producto = { id, ...objeto };
-        productos.push(producto);
-        fs.writeFileSync(this.archivo, JSON.stringify(productos, null, 2));
-        return id;
-    
+    // Metodo Save(Object)
+    // save(Object): Number - Recibe un objeto, lo guarda en el file, devuelve el id asignado.
+    async save(objProduct) {
+        const data = await fs.promises.readFile(`${this.file}`,"utf-8")
+        if(data){
+        const products = JSON.parse(data);
+        const id = products.length +1;
+            objProduct.id = id;     
+            products.push(objProduct);
+                const productsString = JSON.stringify(products);
+                await fs.promises.writeFile(`${this.file}`, productsString);
+                return products;
+            }
+            else{
+                objProduct.id = 1;
+                this.product.push(objProduct);
+                const productsString = JSON.stringify(this.product);
+                await fs.promises.writeFile(`${this.file}`, productsString);
+            }      
     }
+
     // Metodo getById(Number)
-    
     async getById(id ) {
-        const data = fs.readFileSync(this.archivo, "utf-8");
-        const dataParseada = JSON.parse(data);
-        const objeto = dataParseada.find((objeto) => objeto.id === id);
-        return objeto;
+        if (fs.existsSync(this.file)){
+            const data = fs.readFileSync(`${this.file}`, 'utf-8');
+            const dataParseada = JSON.parse(data);
+            const objeto = dataParseada.filter((objeto) => objeto.id === id);
+            return objeto;
+        }
     }
     
-    // Metodo getAll(Number)
-    
-    async getAll() {
-        const data = fs.readFileSync(this.archivo, "utf-8");
-        const dataParseada = JSON.parse(data);
-        return dataParseada;
+    // Metodo getAll()
+    async getAll(){
+        if (fs.existsSync(this.file)){
+            const data = fs.readFileSync(`${this.file}`, 'utf-8');
+            if (data) {
+                return data;
+            }else{
+                return 'Not data Found';
+            }
+        }
+        return 'File not Found'; 
     }
     
     // Metodo deleteById(Number)
-    
     async deleteById(id) {
-
-        const data = fs.readFileSync(this.archivo, "utf-8");
+        const data = fs.readFileSync(this.file, "utf-8");
         const dataParseada = JSON.parse(data);
         const dataFiltrada = dataParseada.filter((objeto) => objeto.id !== id);
         const dataString = JSON.stringify(dataFiltrada);
-        fs.writeFileSync(this.archivo, dataString);
+        fs.writeFileSync(this.file, dataString);
         return dataFiltrada;
-        }
+    }
     
     // Metodo deleteAll(Number)
     
     async deleteAll() {
-      fs.writeFileSync(this.archivo, "[]");
-      return "[]";
+    fs.writeFileSync(this.archivo, "[]");
+    return "[]";
     }
     
     // Metodo updateById(id, prodcut)
 
-async updateById(id, objetoNuevo) {
-    const data = fs.readFileSync(this.archivo, "utf-8");
+async updateById(id, productNew) {
+    const data = fs.readFileSync(this.file, "utf-8");
+    console.log(productNew);
     let dataParseada = JSON.parse(data);
-    let productoViejo = dataParseada.find((objeto) => objeto.id === id);
-    let mensaje = "Se reemplazo el producto";
-    if (productoViejo === undefined) {
-    throw { msg: "404 Not found" };
+    let productToUpdate = dataParseada.find((objeto) => objeto.id === id);
+    if (productToUpdate === undefined) {
+        throw { msg: "404 Not found" };
     }
-    let productosFiltrados = dataParseada.filter((objeto) => objeto.id !== id);
-    productoViejo = { id, ...objetoNuevo };
-    productosFiltrados.push(productoViejo);
-    fs.writeFileSync(this.archivo, JSON.stringify(productosFiltrados, null, 2));
-    return mensaje;
+    let productFiltered = dataParseada.filter((objeto) => objeto.id !== id);
+    productToUpdate = { id, ...productNew };
+    productFiltered.push(productToUpdate);
+    const dataString = JSON.stringify(productFiltered);
+    console.log(productFiltered);
+    fs.writeFileSync(this.file, dataString);
+    return "Product updated";
     }
-
 }
 
 module.exports = Contenedor;
